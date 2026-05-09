@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Update</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            font-family: 'Share Tech Mono', monospace;
+            color: #00ff00; 
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            transition: background 2s ease-in-out;
+        }
+
+        /* --- STAGE 1: THE DISGUISE --- */
+        #update-container {
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            z-index: 100;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            border: 2px solid #00ff00;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        #progress-fill {
+            width: 0%;
+            height: 100%;
+            background: #00ff00;
+            transition: width 0.1s linear;
+        }
+
+        #status-text { margin-bottom: 10px; }
+
+        .error-btn {
+            display: none;
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-family: 'Share Tech Mono', monospace;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* --- STAGE 2: THE REVEAL --- */
+        #letter-content {
+            display: none;
+            opacity: 0;
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            z-index: 50;
+            font-family: 'Playfair Display', serif;
+            transition: opacity 2s ease;
+        }
+
+        #letter-content h2 {
+            color: white;
+            font-size: 2em;
+            text-shadow: 2px 2px 8px rgba(0,0,0,1);
+            font-style: italic;
+        }
+
+        #letter-content p {
+            color: white;
+            font-size: 1.25em;
+            line-height: 1.6;
+            text-shadow: 2px 2px 10px rgba(0,0,0,1);
+        }
+
+        /* --- SNOW EFFECT --- */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            user-select: none;
+            z-index: 40;
+            pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MUSIC -->
+    <audio id="bg-music" loop>
+        <source src="nothing.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- FAKE UPDATE DISGUISE -->
+    <div id="update-container">
+        <div id="status-text">Installing System Patch v.4.0.4...</div>
+        <div class="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+        <div id="percent">0%</div>
+        <button class="error-btn" id="error-btn" onclick="revealLetter()">CRITICAL ERROR: View Log</button>
+    </div>
+
+    <!-- THE UPDATED LETTER -->
+    <div id="letter-content">
+        <h2>Connection Restored</h2>
+        <br>
+        <p>
+            You asked me yesterday if I see you in my future. Of course I do, baby. You <b>are</b> my future. 
+            <br><br>
+            Every time I see your beautiful face, I always say to myself, "I'm so lucky." Every time we talk, I just keep falling for you again and again.
+        </p>
+        <p style="font-style: italic; color: #ffb6c1; margin-top: 30px;">- Yours Forever</p>
+    </div>
+
+    <script>
+        // Progress Bar Simulation
+        let progress = 0;
+        const fill = document.getElementById('progress-fill');
+        const percentText = document.getElementById('percent');
+        const statusText = document.getElementById('status-text');
+        const errorBtn = document.getElementById('error-btn');
+
+        const interval = setInterval(() => {
+            progress += Math.random() * 5;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                statusText.innerText = "UPDATE FAILED. SYSTEM CORRUPTED.";
+                statusText.style.color = "#ff0000";
+                errorBtn.style.display = "inline-block";
+            }
+            fill.style.width = progress + "%";
+            percentText.innerText = Math.floor(progress) + "%";
+        }, 150);
+
+        function revealLetter() {
+            // Start Music
+            const music = document.getElementById('bg-music');
+            music.volume = 0.5;
+            music.play();
+
+            // Hide Update Screen
+            document.getElementById('update-container').style.display = 'none';
+
+            // Set Background to us.gif
+            document.body.style.backgroundImage = "url('us.gif')";
+
+            // Show Letter
+            const letter = document.getElementById('letter-content');
+            letter.style.display = 'block';
+            setTimeout(() => { letter.style.opacity = '1'; }, 100);
+
+            // Start Snow to match the park scene
+            setInterval(createSnowflake, 150);
+        }
+
+        function createSnowflake() {
+            const flake = document.createElement('div');
+            flake.classList.add('snowflake');
+            flake.innerText = '•';
+            flake.style.left = Math.random() * 100 + 'vw';
+            flake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            flake.style.opacity = Math.random();
+            flake.style.animationDuration = Math.random() * 3 + 3 + 's';
+            
+            document.body.appendChild(flake);
+            setTimeout(() => { flake.remove(); }, 6000);
+        }
+    </script>
+</body>
+</html>
